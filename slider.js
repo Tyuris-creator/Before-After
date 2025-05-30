@@ -10,15 +10,17 @@ function getTemplate(state) {
 
 class Slider {
 
-    constructor(selector, options) {
+    constructor(selector) {
         this.$el = document.getElementById(selector)
         this.state = {
             width: 512,
-            after: options.after,
-            before: options.before,
+            after: '',
+            before: '',
         }
         this.#render(this.state)
         this.#listen()
+        this.#setImageAfter(); // Переместили вызов сюда
+        this.#setImageBefore();
     }
 
     #render(state) {
@@ -32,6 +34,24 @@ class Slider {
         }
         console.log(this.state)
         this.#render(this.state)
+    }
+
+  #setImageAfter() {
+        document.querySelector(".file_after").onchange = (event) => {
+            let url = URL.createObjectURL(event.target.files[0]);
+            const after = document.getElementsByClassName('slider__after')[0]; // Используем [0] для доступа к первому элементу
+            after.style.backgroundImage = `url(${url})`;
+            this.#update({ after: url }); // Обновляем состояние
+        };
+    }
+
+    #setImageBefore() {
+        document.querySelector(".file_before").onchange = (event) => {
+            let url = URL.createObjectURL(event.target.files[0]);
+            const before = document.getElementsByClassName('slider__before')[0]; // Используем [0] для доступа к первому элементу
+            before.style.backgroundImage = `url(${url})`;
+            this.#update({ before: url }); // Обновляем состояние
+        };
     }
 
     #listen() {
@@ -65,7 +85,4 @@ class Slider {
 
 }
 
-const slider = new Slider('slider', {
-    after: './assets/1.jpg',
-    before: './assets/2.jpg',
-})
+const slider = new Slider('slider')
